@@ -8,12 +8,10 @@ module.exports = class He {
 constructor(root, he, open) {
   this._node = {
     dapai: $('div.dapai', root),
-    // TODO: huapai
-    // huapai: $('.huapai', root),
+    huapai: $('div.huapai', root),
   }
   this._he = he;
   this._open = open;
-  // TODO: huapai
 }
 
 redraw(open) {
@@ -35,14 +33,21 @@ redraw(open) {
       this._node.dapai.append($('<span class="break">'));
     }
   }
+  this._node.huapai.empty();
+  this._node.huapai.append('' + this._he._huapai);
   return this;
 }
 
 dapai(p) {
-
   let pai = Majiang.View.pai(p).addClass('dapai');
   if (p[2] == '_') pai.addClass('mopai');
   this._node.dapai.append(pai);
+  return this;
+}
+
+buhua(p) {
+  this._node.huapai.empty();
+  this._node.huapai.append('' + this._he._huapai);
   return this;
 }
 

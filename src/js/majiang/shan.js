@@ -12,8 +12,12 @@ constructor(pai) {
     this._pai = pai;
   } else {
     let pai = [];
-    for (let s of ['m', 'p', 's', 'z']) {
-      for (let n = 1; n <= (s == 'z' ? 7 : 9); n++) {
+    for (let s of ['m', 'p', 's', 'z', 'h']) {
+      let n0 = 9;
+      if (s == 'z') n0 = 7;
+      else if (s == 'h') n0 = 8;
+
+      for (let n = 1; n <= n0; n++) {
         for (let i = 0; i < 4; i++) {
           pai.push(s+n);
         }
@@ -42,6 +46,12 @@ zimo() {
   if (this.paishu() == 0) throw new Error(this);
   if (this._isKaigang) throw new Error(this);
   return this._pai.pop();
+}
+
+// 删除并返回第一张牌作为岭上牌
+buhua() {
+  if (this.paishu() == 0) throw new Error(this);
+  return this._pai.shift();
 }
 
 // 删除并返回第一张牌作为岭上牌，同时改变开杠状态

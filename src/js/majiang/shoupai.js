@@ -15,6 +15,7 @@ constructor(qipai) {
     p: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     s: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     z: [0, 0, 0, 0, 0, 0, 0, 0],
+    h: [0, 0, 0, 0, 0, 0, 0, 0, 0],
   };
   this._fulou = [];
   this._zimo = null;
@@ -37,12 +38,12 @@ constructor(qipai) {
  */
 static valid_pai(p) {
   /**
-   * mpsz: 花色
+   * mpszh: 花色
    * \d: 数字
    * _: 摸切
    * +, =, -: 被副露（下家，对家，上家）
    */
-  if (p.match(/^(?:[mps]\d|z[1-7])_?[\+\=\-]?$/)) return p;
+  if (p.match(/^(?:[mps]\d|z[1-7]|h[1-8])_?[\+\=\-]?$/)) return p;
 }
 
 /**
@@ -81,10 +82,11 @@ static fromString(paistr) {
   let fulou = paistr.split(',');
   let shouli = fulou.shift();
 
-  for (let suitstr of shouli.match(/[mpsz]\d+/g) || []) {
+  for (let suitstr of shouli.match(/[mpszh]\d+/g) || []) {
     let s = suitstr[0];
     for (let n of suitstr.match(/\d/g)) {
       if (s == 'z' && (n < 1 || 7 < n)) continue;
+      if (s == 'h' && (n < 1 || 8 < n)) continue;
       qipai.push(s+n);
     }
   }
@@ -116,7 +118,7 @@ static fromString(paistr) {
 toString() {
   let paistr = '';
 
-  for (let s of ['m', 'p', 's', 'z']) {
+  for (let s of ['m', 'p', 's', 'z', 'h']) {
     let suitstr = s;
     let shouli = this._shouli[s];
     for (let n = 1; n < shouli.length; n++) {
@@ -145,6 +147,7 @@ clone() {
     p: this._shouli.p.concat(),
     s: this._shouli.s.concat(),
     z: this._shouli.z.concat(),
+    h: this._shouli.h.concat(),
   };
   shoupai._fulou = this._fulou.concat();
   shoupai._zimo = this._zimo;
@@ -162,8 +165,9 @@ zimo(p) {
   let shouli = this._shouli[s];
   if (shouli[n] == 4) throw new Error([this, p]);
 
+  // 开局补花时不设置 _zimo
+  if (this.shouliPaishu() != 12) this._zimo = p.substr(0,  2);
   shouli[n]++;
-  this._zimo = p.substr(0,  2);
   return this;
 }
 
@@ -171,6 +175,19 @@ zimo(p) {
 dapai(p) {
   if (!Shoupai.valid_pai(p)) throw new Error(p);
   if (!this._zimo) throw new Error([this, p]);
+
+  let [s, n] = p;
+  let shouli = this._shouli[s];
+  if (shouli[n] == 0) throw new Error([this, p]);
+
+  shouli[n]--;
+  this._zimo = null;
+  return this;
+}
+
+// 补花（手牌减 1 并清除 _zimo）
+buhua(p) {
+  if (!Shoupai.valid_pai(p)) throw new Error(p);
 
   let [s, n] = p;
   let shouli = this._shouli[s];
@@ -361,6 +378,15 @@ get_gang_mianzi(p) {
   }
 
   return mianzi;
+}
+
+shouliPaishu() {
+  let paishu = 0;
+  for (let s of ['m', 'p', 's', 'z', 'h']) {
+    paishu += this._shouli[s].reduce(function(acc, val) { return acc + val; }, 0);
+  }
+
+  return paishu;
 }
 
 }

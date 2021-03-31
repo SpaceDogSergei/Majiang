@@ -8,7 +8,7 @@ const view_class = ['main', 'xiajia', 'duimian', 'shangjia'];
 
 class Shan {
   constructor(p) {
-    this._paishu = 136 - 13 * 4;
+    this._paishu = 144 - 13 * 4;
   }
   paishu() { return this._paishu }
   zimo(p) { this._paishu--; return p }
@@ -237,6 +237,7 @@ next() {
   if (data.qipai) this.qipai (data.qipai);
   else if (data.zimo) this.zimo (data.zimo);
   else if (data.dapai) this.dapai (data.dapai);
+  else if (data.buhua) this.buhua (data.buhua);
   else if (data.fulou) this.fulou (data.fulou);
   else if (data.gang) this.gang (data.gang);
   else if (data.gangzimo) this.gangzimo(data.gangzimo);
@@ -244,6 +245,7 @@ next() {
   else if (data.hule) this.hule (data.hule);
   else if (data.liuju) this.liuju (data.liuju);
 
+  // TODO: remove?
   if (!this._redo) {
     if (this._log && this._log.dapai
       && this._log.dapai.p.substr(-1) == '*') this._view.update();
@@ -309,6 +311,16 @@ zimo(zimo) {
   this._view.update({zimo:zimo});
 }
 
+_buhua(buhua) {
+  this._model.shoupai[buhua.l].buhua(buhua.p);
+  this._model.he[buhua.l].buhua(buhua.p);
+}
+buhua(buhua) {
+  this._view.say('buhua', buhua.l);
+  this._buhua(buhua);
+  this._view.update({buhua:buhua});
+}
+
 _dapai(dapai) {
   this._model.shoupai[dapai.l].dapai(dapai.p);
   this._model.he[dapai.l].dapai(dapai.p);
@@ -352,7 +364,6 @@ _gang(gang) {
   this._model.shoupai[gang.l].gang(p) ;
 }
 gang(gang) {
-
   if (!this._redo) {
     this._view.say('gang', gang.l);
     this._redo = true;

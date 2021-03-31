@@ -19,7 +19,7 @@ redraw(open) {
 
   this._node.shouli.empty();
   let zimo = this._shoupai._zimo;
-  for (let s of ['m', 'p', 's', 'z']) {
+  for (let s of ['m', 'p', 's', 'z', 'h']) {
     let shouli = this._shoupai._shouli[s];
     for (let n = 1; n < shouli.length; n++) {
       let n_pai = shouli[n];
@@ -88,6 +88,14 @@ dapai(p) {
     }
   }
   dapai.addClass('deleted');
+
+  return this;
+}
+
+buhua(p) {
+  p = p.substr(0, 2);
+  let buhua = $(`.pai[data-pai="${p}"]`, this._node.shouli).eq(0);
+  buhua.addClass('deleted');
 
   return this;
 }

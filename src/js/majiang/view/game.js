@@ -12,7 +12,7 @@ const view_class = ['main', 'xiajia', 'duimian', 'shangjia'];
 const feng_hanzi = ['東', '南', '西', '北'];
 const shu_hanzi = ['一', '二', '三', '四'];
 
-const say_text = { chi: '吃', peng: '碰', gang: '杠', hu: '和' };
+const say_text = { chi: '吃', peng: '碰', gang: '杠', hu: '和', buhua: '花' };
 
 class Chang {
   constructor(root, model) {
@@ -168,6 +168,10 @@ update(data = {}) {
     this._view.shoupai[data.dapai.l].dapai(data.dapai.p);
     if (this.sound_on) this._audio.dapai[data.dapai.l].play();
     this._view.he[data.dapai.l].dapai(data.dapai.p);
+  } else if (data.buhua) {
+    this._view.shoupai[data.buhua.l].buhua(data.buhua.p);
+    if (this.sound_on) this._audio.buhua[data.buhua.l].play();
+    this._view.he[data.buhua.l].buhua(data.buhua.p);
   } else if (data.fulou) {
     this._view.shoupai[data.fulou.l].redraw();
   } else if (data.gang) {
@@ -348,7 +352,7 @@ function get_audio() {
   if (_audio) return _audio;
 
   _audio = {};
-  for (let name of ['dapai', 'chi', 'peng', 'gang', 'hu']) {
+  for (let name of ['dapai', 'chi', 'peng', 'gang', 'hu', 'buhua']) {
     _audio[name] = [];
     for (let l = 0; l < 4; l++) {
       _audio[name][l] = audio(name);
